@@ -1,1 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>醫檢師線上題庫練習系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .login-section, .setup-section, .quiz-section {
+            padding: 30px;
+        }
+
+        .login-section {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            line-height: 1.6;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .options {
+            margin: 25px 0;
+        }
+
+        .option {
+            display: block;
+            background: #fff;
+            margin: 12px 0;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #5a6fd8;
+        }
+
+        .option.correct {
+            background: #28a745;
+            color: white;
+            border-color: #23923d;
+        }
+
+        .option.incorrect {
+            background: #dc3545;
+            color: white;
+            border-color: #c82333;
+        }
+
+        .progress {
+            background: #e9ecef;
+            height: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .result-panel {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result-panel.correct {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .result-panel.incorrect {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .leaderboard {
+            background: white;
+            margin: 20px 0;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .leaderboard h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .rank {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .stats-bar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧬 醫檢師線上題庫</h1>
+            <p>多人同步練習系統</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number" id="totalQuestions">-</div>
+                <div class="stat-label">題庫總數</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="myCorrect">0</div>
+                <div class="stat-label">我的答對</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="myTotal">0</div>
+                <div class="stat-label">我的總題</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="myAccuracy">0%</div>
+                <div class="stat-label">我的正確率</div>
+            </div>
+        </div>
+
+        <!-- 登入區域 -->
+        <div class="login-section" id="loginSection">
+            <h2>🎓 學生登入</h2>
+            <div class="form-group">
+                <label for="studentId">學號</label>
+                <input type="text" id="studentId" placeholder="請輸入學號" required>
+            </div>
+            <div class="form-group">
+                <label for="studentName">姓名</label>
+                <input type="text" id="studentName" placeholder="請輸入姓名" required>
+            </div>
+            <button class="btn" onclick="loginStudent()">開始練習</button>
+        </div>
+
+        <!-- 設定區域 -->
+        <div class="setup-section hidden" id="setupSection">
+            <h2>📚 練習設定</h2>
+            <div class="form-group">
+                <label for="categorySelect">選擇主題分類</label>
+                <select id="categorySelect">
+                    <option value="all">全部主題</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="practiceMode">練習模式</label>
+                <select id="practiceMode">
+                    <option value="random">隨機出題</option>
+                    <option value="sequential">順序練習</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="questionCount">題目數量</label>
+                <select id="questionCount">
+                    <option value="10">10題</option>
+                    <option value="20" selected>20題</option>
+                    <option value="50">50題</option>
+                    <option value="0">全部題目</option>
+                </select>
+            </div>
+            <div class="action-buttons">
+                <button class="btn" onclick="startPractice()">開始練習</button>
+                <button class="btn btn-secondary" onclick="showStats()">查看成績</button>
+                <button class="btn btn-secondary" onclick="logout()">重新登入</button>
+            </div>
+        </div>
+
+        <!-- 練習區域 -->
+        <div class="quiz-section hidden" id="quizSection">
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-header">
+                    <span id="questionNumber">第 1 題</span>
+                    <span id="questionCategory">分類</span>
+                </div>
+                <div class="question-text" id="questionText"></div>
+            </div>
+
+            <div class="options" id="optionsContainer"></div>
+
+            <div class="action-buttons">
+                <button class="btn btn-success" onclick="submitAnswer()">提交答案</button>
+                <button class="btn" onclick="nextQuestion()">下一題</button>
+                <button class="btn btn-secondary" onclick="backToSetup()">返回設定</button>
+            </div>
+
+            <div class="result-panel" id="resultPanel">
+                <div id="resultText"></div>
+            </div>
+        </div>
+
+        <!-- 成績統計區域 -->
+        <div class="setup-section hidden" id="statsSection">
+            <h2>📊 我的學習成績</h2>
+            <div id="personalStats"></div>
+            <div class="leaderboard">
+                <h3>🏆 排行榜 TOP 10</h3>
+                <div id="leaderboardContainer"></div>
+            </div>
+            <button class="btn" onclick="backToSetup()">返回練習</button>
+        </div>
+    </div>
+
+    <script>
+        // 全域變數
+        let currentUser = null;
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let selectedAnswer = null;
+        let sessionStats = {
+            total: 0,
+            correct: 0
+        };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSystemStats();
+        });
+
+        // 載入系統統計
+        async function loadSystemStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const data = await response.json();
+                
+                document.getElementById('totalQuestions').textContent = data.totalQuestions;
+                
+                // 更新分類選項
+                const categorySelect = document.getElementById('categorySelect');
+                categorySelect.innerHTML = '<option value="all">全部主題 (' + data.totalQuestions + '題)</option>';
+                
+                data.categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.category;
+                    option.textContent = `${cat.category} (${cat.count}題)`;
+                    categorySelect.appendChild(option);
+                });
+                
+            } catch (error) {
+                console.error('載入統計失敗:', error);
+            }
+        }
+
+        // 學生登入
+        async function loginStudent() {
+            const studentId = document.getElementById('studentId').value.trim();
+            const studentName = document.getElementById('studentName').value.trim();
+
+            if (!studentId || !studentName) {
+                alert('請輸入完整的學號和姓名');
+                return;
+            }
+
+            currentUser = { studentId, studentName };
+            
+            // 載入個人統計
+            await loadPersonalStats();
+            
+            // 切換到設定頁面
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('setupSection').classList.remove('hidden');
+        }
+
+        // 載入個人統計
+        async function loadPersonalStats() {
+            try {
+                const response = await fetch(`/api/student-stats/${currentUser.studentId}`);
+                const data = await response.json();
+                
+                const stats = data.overall;
+                document.getElementById('myCorrect').textContent = stats.correct_answers;
+                document.getElementById('myTotal').textContent = stats.total_questions;
+                document.getElementById('myAccuracy').textContent = Math.round(stats.accuracy_rate) + '%';
+                
+            } catch (error) {
+                console.error('載入個人統計失敗:', error);
+            }
+        }
+
+        // 開始練習
+        async function startPractice() {
+            const category = document.getElementById('categorySelect').value;
+            const mode = document.getElementById('practiceMode').value;
+            const count = parseInt(document.getElementById('questionCount').value);
+
+            try {
+                const response = await fetch('/api/start-practice', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        studentId: currentUser.studentId,
+                        studentName: currentUser.studentName,
+                        category: category,
+                        mode: mode,
+                        count: count
+                    })
+                });
+
+                const data = await response.json();
+                currentQuestions = data.questions;
+                currentQuestionIndex = 0;
+                sessionStats = { total: 0, correct: 0 };
+
+                if (currentQuestions.length === 0) {
+                    alert('沒有找到符合條件的題目');
+                    return;
+                }
+
+                // 切換到練習頁面
+                document.getElementById('setupSection').classList.add('hidden');
+                document.getElementById('quizSection').classList.remove('hidden');
+                
+                showCurrentQuestion();
+
+            } catch (error) {
+                console.error('開始練習失敗:', error);
+                alert('開始練習失敗，請重試');
+            }
+        }
+
+        // 顯示當前題目
+        function showCurrentQuestion() {
+            if (currentQuestionIndex >= currentQuestions.length) {
+                finishPractice();
+                return;
+            }
+
+            const question = currentQuestions[currentQuestionIndex];
+            selectedAnswer = null;
+
+            // 更新進度條
+            const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            // 顯示題目資訊
+            document.getElementById('questionNumber').textContent = 
+                `第 ${currentQuestionIndex + 1} 題 / 共 ${currentQuestions.length} 題`;
+            document.getElementById('questionCategory').textContent = question.category;
+            document.getElementById('questionText').textContent = question.content;
+
+            // 顯示選項
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            ['A', 'B', 'C', 'D'].forEach(option => {
+                const optionText = question[`option_${option.toLowerCase()}`];
+                if (optionText) {
+                    const optionElement = document.createElement('div');
+                    optionElement.className = 'option';
+                    optionElement.textContent = `${option}) ${optionText}`;
+                    optionElement.onclick = () => selectOption(option, optionElement);
+                    optionsContainer.appendChild(optionElement);
+                }
+            });
+
+            // 隱藏結果面板
+            document.getElementById('resultPanel').style.display = 'none';
+        }
+
+        // 選擇選項
+        function selectOption(option, element) {
+            // 清除之前的選擇
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            // 標記新選擇
+            element.classList.add('selected');
+            selectedAnswer = option;
+        }
+
+        // 提交答案
+        async function submitAnswer() {
+            if (!selectedAnswer) {
+                alert('請先選擇一個答案！');
+                return;
+            }
+
+            const question = currentQuestions[currentQuestionIndex];
+
+            try {
+                const response = await fetch('/api/submit-answer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        studentId: currentUser.studentId,
+                        studentName: currentUser.studentName,
+                        questionId: question.id,
+                        userAnswer: selectedAnswer,
+                        category: question.category
+                    })
+                });
+
+                const result = await response.json();
+                
+                // 更新會話統計
+                sessionStats.total++;
+                if (result.correct) {
+                    sessionStats.correct++;
+                }
+
+                // 標記選項
+                document.querySelectorAll('.option').forEach((opt, index) => {
+                    const optionLetter = ['A', 'B', 'C', 'D'][index];
+                    
+                    if (optionLetter === result.correctAnswer) {
+                        opt.classList.add('correct');
+                    } else if (optionLetter === selectedAnswer && !result.correct) {
+                        opt.classList.add('incorrect');
+                    }
+                    
+                    opt.style.pointerEvents = 'none';
+                });
+
+                // 顯示結果
+                const resultPanel = document.getElementById('resultPanel');
+                const resultText = document.getElementById('resultText');
+                
+                if (result.correct) {
+                    resultPanel.className = 'result-panel correct';
+                    resultText.innerHTML = '🎉 答對了！';
+                } else {
+                    const correctOptionText = question[`option_${result.correctAnswer.toLowerCase()}`];
+                    resultPanel.className = 'result-panel incorrect';
+                    resultText.innerHTML = `❌ 答錯了！正確答案是 ${result.correctAnswer}) ${correctOptionText}`;
+                }
+                
+                resultPanel.style.display = 'block';
+
+                // 載入更新的個人統計
+                await loadPersonalStats();
+
+            } catch (error) {
+                console.error('提交答案失敗:', error);
+                alert('提交答案失敗，請重試');
+            }
+        }
+
+        // 下一題
+        function nextQuestion() {
+            currentQuestionIndex++;
+            showCurrentQuestion();
+        }
+
+        // 完成練習
+        function finishPractice() {
+            const accuracy = sessionStats.total > 0 ? Math.round((sessionStats.correct / sessionStats.total) * 100) : 0;
+            
+            alert(`練習完成！\n` + 
+                  `本次答對: ${sessionStats.correct} 題\n` +
+                  `本次總題: ${sessionStats.total} 題\n` +
+                  `本次正確率: ${accuracy}%`);
+            
+            backToSetup();
+        }
+
+        // 返回設定
+        function backToSetup() {
+            document.getElementById('quizSection').classList.add('hidden');
+            document.getElementById('statsSection').classList.add('hidden');
+            document.getElementById('setupSection').classList.remove('hidden');
+        }
+
+        // 查看統計
+        async function showStats() {
+            try {
+                // 載入個人詳細統計
+                const response = await fetch(`/api/student-stats/${currentUser.studentId}`);
+                const data = await response.json();
+                
+                const stats = data.overall;
+                const categories = data.categories;
+
+                let personalStatsHTML = `
+                    <div class="leaderboard">
+                        <h3>📈 我的學習統計</h3>
+                        <div class="leaderboard-item">
+                            <span>總答題數</span>
+                            <span><strong>${stats.total_questions}</strong> 題</span>
+                        </div>
+                        <div class="leaderboard-item">
+                            <span>答對題數</span>
+                            <span><strong>${stats.correct_answers}</strong> 題</span>
+                        </div>
+                        <div class="leaderboard-item">
+                            <span>整體正確率</span>
+                            <span><strong>${Math.round(stats.accuracy_rate)}%</strong></span>
+                        </div>
+                    </div>
+                `;
+
+                if (categories.length > 0) {
+                    personalStatsHTML += `
+                        <div class="leaderboard">
+                            <h3>📚 分類統計</h3>
+                    `;
+                    
+                    categories.forEach(cat => {
+                        personalStatsHTML += `
+                            <div class="leaderboard-item">
+                                <span>${cat.category}</span>
+                                <span>${cat.correct}/${cat.total} (${cat.accuracy}%)</span>
+                            </div>
+                        `;
+                    });
+                    
+                    personalStatsHTML += `</div>`;
+                }
+
+                document.getElementById('personalStats').innerHTML = personalStatsHTML;
+
+                // 載入排行榜
+                const leaderboardResponse = await fetch('/api/leaderboard');
+                const leaderboardData = await leaderboardResponse.json();
+                
+                let leaderboardHTML = '';
+                leaderboardData.leaderboard.forEach((student, index) => {
+                    const isCurrentUser = student.student_name === currentUser.studentName;
+                    leaderboardHTML += `
+                        <div class="leaderboard-item ${isCurrentUser ? 'current-user' : ''}" style="${isCurrentUser ? 'background: #e3f2fd; font-weight: bold;' : ''}">
+                            <span>
+                                <span class="rank">#${index + 1}</span>
+                                ${student.student_name}
+                                ${isCurrentUser ? ' (我)' : ''}
+                            </span>
+                            <span>${Math.round(student.accuracy_rate)}% (${student.total_questions}題)</span>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('leaderboardContainer').innerHTML = leaderboardHTML;
+
+                // 切換到統計頁面
+                document.getElementById('setupSection').classList.add('hidden');
+                document.getElementById('statsSection').classList.remove('hidden');
+
+            } catch (error) {
+                console.error('載入統計失敗:', error);
+                alert('載入統計失敗，請重試');
+            }
+        }
+
+        // 登出
+        function logout() {
+            currentUser = null;
+            currentQuestions = [];
+            sessionStats = { total: 0, correct: 0 };
+            
+            // 清空登入表單
+            document.getElementById('studentId').value = '';
+            document.getElementById('studentName').value = '';
+            
+            // 重置統計顯示
+            document.getElementById('myCorrect').textContent = '0';
+            document.getElementById('myTotal').textContent = '0';
+            document.getElementById('myAccuracy').textContent = '0%';
+            
+            // 返回登入頁面
+            document.getElementById('setupSection').classList.add('hidden');
+            document.getElementById('quizSection').classList.add('hidden');
+            document.getElementById('statsSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
