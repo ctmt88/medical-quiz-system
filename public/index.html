@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>醫檢師題庫練習平台</title>
+    <title>醫檢師線上題庫練習系統</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -39,12 +39,7 @@
             margin-bottom: 10px;
         }
 
-        .header p {
-            opacity: 0.9;
-            font-size: 1.1em;
-        }
-
-        .stats {
+        .stats-bar {
             display: flex;
             justify-content: space-around;
             padding: 20px;
@@ -67,23 +62,108 @@
             margin-top: 5px;
         }
 
-        .controls {
+        /* 詳解相關樣式 */
+        .explanation-panel {
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .explanation-header {
+            background: #17a2b8;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .explanation-content {
+            background: #e8f4f8;
+            padding: 20px;
+            border: 1px solid #bee5eb;
+        }
+
+        .explanation-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .explanation-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .explanation-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .explanation-btn:hover {
+            background: #138496;
+            transform: translateY(-1px);
+        }
+
+        .explanation-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .close-explanation {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .login-section, .setup-section, .quiz-section {
             padding: 30px;
-            background: white;
         }
 
-        .control-group {
-            margin-bottom: 25px;
+        .login-section {
+            text-align: center;
         }
 
-        .control-group label {
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
             color: #2c3e50;
         }
 
-        select, button {
+        input, select, button {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
@@ -92,43 +172,51 @@
             transition: all 0.3s ease;
         }
 
-        select:focus {
+        input:focus, select:focus {
             border-color: #667eea;
             outline: none;
         }
 
-        .start-btn {
+        .btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
             font-weight: bold;
-            font-size: 1.2em;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
-        .start-btn:hover {
+        .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
-        .quiz-container {
-            display: none;
-            padding: 30px;
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
-        .question-header {
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .question-card {
             background: #f8f9fa;
-            padding: 20px;
-            border-left: 5px solid #667eea;
+            padding: 25px;
             margin-bottom: 25px;
+            border-left: 5px solid #667eea;
             border-radius: 0 10px 10px 0;
         }
 
-        .question-info {
+        .question-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-size: 0.9em;
             color: #666;
         }
@@ -146,10 +234,10 @@
 
         .option {
             display: block;
-            background: #f8f9fa;
-            margin: 10px 0;
+            background: #fff;
+            margin: 12px 0;
             padding: 15px 20px;
-            border: 2px solid transparent;
+            border: 2px solid #e9ecef;
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -180,74 +268,10 @@
             border-color: #c82333;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-success {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .result {
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 10px;
-            display: none;
-        }
-
-        .result.correct {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-        }
-
-        .result.incorrect {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-        }
-
-        .explanation {
-            margin-top: 15px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-left: 4px solid #667eea;
-            border-radius: 0 5px 5px 0;
-            font-style: italic;
-        }
-
         .progress {
             background: #e9ecef;
-            height: 8px;
-            border-radius: 4px;
+            height: 10px;
+            border-radius: 5px;
             margin: 20px 0;
             overflow: hidden;
         }
@@ -255,7 +279,60 @@
         .progress-bar {
             background: linear-gradient(90deg, #667eea, #764ba2);
             height: 100%;
-            transition: width 0.3s ease;
+            transition: width 0.5s ease;
+        }
+
+        .result-panel {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result-panel.correct {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .result-panel.incorrect {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .leaderboard {
+            background: white;
+            margin: 20px 0;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .leaderboard h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .rank {
+            font-weight: bold;
+            color: #667eea;
         }
 
         @media (max-width: 768px) {
@@ -264,11 +341,7 @@
                 border-radius: 15px;
             }
             
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .stats {
+            .stats-bar {
                 flex-direction: column;
                 gap: 15px;
             }
@@ -282,64 +355,91 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🧬 醫檢師題庫練習</h1>
-            <p>臨床血清免疫學與臨床病毒學專業題庫</p>
+            <h1>🧬 醫檢師線上題庫</h1>
+            <p>多人同步練習系統</p>
         </div>
 
-        <div class="stats">
+        <div class="stats-bar">
             <div class="stat-item">
-                <div class="stat-number" id="totalQuestions">80</div>
-                <div class="stat-label">總題數</div>
+                <div class="stat-number" id="totalQuestions">-</div>
+                <div class="stat-label">題庫總數</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number" id="correctCount">0</div>
-                <div class="stat-label">答對</div>
+                <div class="stat-number" id="myCorrect">0</div>
+                <div class="stat-label">我的答對</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number" id="totalAnswered">0</div>
-                <div class="stat-label">已答題</div>
+                <div class="stat-number" id="myTotal">0</div>
+                <div class="stat-label">我的總題</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number" id="accuracy">0%</div>
-                <div class="stat-label">正確率</div>
+                <div class="stat-number" id="myAccuracy">0%</div>
+                <div class="stat-label">我的正確率</div>
             </div>
         </div>
 
-        <div class="controls" id="setupPanel">
-            <div class="control-group">
-                <label for="excelFile">📁 選擇Excel題庫檔案</label>
-                <input type="file" id="excelFile" accept=".xlsx,.xls" style="margin-bottom: 15px; padding: 10px; border: 2px dashed #667eea; border-radius: 8px; background: #f8f9fa;">
-                <div id="fileStatus" style="color: #666; font-size: 0.9em; margin-bottom: 15px;">請選擇Excel檔案載入題庫</div>
+        <!-- 登入區域 -->
+        <div class="login-section" id="loginSection">
+            <h2>🎓 學生登入</h2>
+            <div class="form-group">
+                <label for="studentId">學號</label>
+                <input type="text" id="studentId" placeholder="請輸入學號" required>
             </div>
+            <div class="form-group">
+                <label for="studentName">姓名</label>
+                <input type="text" id="studentName" placeholder="請輸入姓名" required>
+            </div>
+            <button class="btn" onclick="loginStudent()">開始練習</button>
+            
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                <a href="/advanced" style="color: #667eea; text-decoration: none; font-weight: 500;">
+                    🚀 進階練習模式（答案暫存+跳題）
+                </a>
+            </div>
+        </div>
 
-            <div class="control-group">
-                <label for="categoryFilter">選擇主題分類</label>
-                <select id="categoryFilter" disabled>
-                    <option value="all">請先載入Excel檔案</option>
+        <!-- 設定區域 -->
+        <div class="setup-section hidden" id="setupSection">
+            <h2>📚 練習設定</h2>
+            <div class="form-group">
+                <label for="categorySelect">選擇主題分類</label>
+                <select id="categorySelect">
+                    <option value="all">全部主題</option>
                 </select>
             </div>
-
-            <div class="control-group">
+            <div class="form-group">
                 <label for="practiceMode">練習模式</label>
                 <select id="practiceMode">
                     <option value="random">隨機出題</option>
                     <option value="sequential">順序練習</option>
-                    <option value="shuffle_options">隨機選項順序</option>
                 </select>
             </div>
-
-            <button class="start-btn" onclick="startQuiz()" id="startButton" disabled style="opacity: 0.5;">請先載入Excel檔案</button>
+            <div class="form-group">
+                <label for="questionCount">題目數量</label>
+                <select id="questionCount">
+                    <option value="10">10題</option>
+                    <option value="20" selected>20題</option>
+                    <option value="50">50題</option>
+                    <option value="0">全部題目</option>
+                </select>
+            </div>
+            <div class="action-buttons">
+                <button class="btn" onclick="startPractice()">開始練習</button>
+                <button class="btn btn-secondary" onclick="showStats()">查看成績</button>
+                <button class="btn btn-secondary" onclick="logout()">重新登入</button>
+            </div>
         </div>
 
-        <div class="quiz-container" id="quizPanel">
+        <!-- 練習區域 -->
+        <div class="quiz-section hidden" id="quizSection">
             <div class="progress">
                 <div class="progress-bar" id="progressBar"></div>
             </div>
 
-            <div class="question-header">
-                <div class="question-info">
+            <div class="question-card">
+                <div class="question-header">
                     <span id="questionNumber">第 1 題</span>
-                    <span id="questionCategory">主題分類</span>
+                    <span id="questionCategory">分類</span>
                 </div>
                 <div class="question-text" id="questionText"></div>
             </div>
@@ -347,174 +447,177 @@
             <div class="options" id="optionsContainer"></div>
 
             <div class="action-buttons">
-                <button class="btn btn-secondary" onclick="showAnswer()">查看答案</button>
-                <button class="btn btn-primary" onclick="nextQuestion()">下一題</button>
+                <button class="btn btn-success" onclick="submitAnswer()" id="submitBtn">提交答案</button>
+                <button class="btn btn-secondary" onclick="previousQuestion()" id="prevBtn">上一題</button>
+                <button class="btn" onclick="nextQuestion()" id="nextBtn">下一題</button>
                 <button class="btn btn-secondary" onclick="backToSetup()">返回設定</button>
             </div>
 
-            <div class="result" id="resultPanel">
+            <div class="result-panel" id="resultPanel">
                 <div id="resultText"></div>
-                <div class="explanation" id="explanationText" style="display: none;">
-                    💡 這題目前沒有詳細解析，但你可以根據醫檢專業知識來理解答案。
+                <button class="explanation-btn" onclick="toggleExplanation()" id="explanationBtn" style="display: none;">
+                    📖 查看詳解
+                </button>
+            </div>
+
+            <!-- 詳解面板 -->
+            <div class="explanation-panel" id="explanationPanel">
+                <div class="explanation-header">
+                    <h4>💡 題目詳解</h4>
+                    <button class="close-explanation" onclick="hideExplanation()">✕</button>
+                </div>
+                <div class="explanation-content">
+                    <div class="explanation-text" id="explanationText"></div>
+                    <img id="explanationImage" class="explanation-image" style="display: none;" alt="詳解圖片">
                 </div>
             </div>
         </div>
+
+        <!-- 成績統計區域 -->
+        <div class="setup-section hidden" id="statsSection">
+            <h2>📊 我的學習成績</h2>
+            <div id="personalStats"></div>
+            <div class="leaderboard">
+                <h3>🏆 排行榜 TOP 10</h3>
+                <div id="leaderboardContainer"></div>
+            </div>
+            <button class="btn" onclick="backToSetup()">返回練習</button>
+        </div>
     </div>
 
-    <!-- 引入SheetJS庫來讀取Excel -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
         // 全域變數
-        let questionsData = [];
+        let currentUser = null;
         let currentQuestions = [];
         let currentQuestionIndex = 0;
         let selectedAnswer = null;
-        let showingAnswer = false;
-        let stats = {
-            totalAnswered: 0,
-            correctCount: 0
+        let sessionStats = {
+            total: 0,
+            correct: 0
         };
-
-        // 處理Excel檔案上傳
-        document.addEventListener('DOMContentLoaded', function() {
-            const fileInput = document.getElementById('excelFile');
-            fileInput.addEventListener('change', handleFileUpload);
-        });
-
-        async function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const fileStatus = document.getElementById('fileStatus');
-            fileStatus.textContent = '正在讀取檔案...';
-            fileStatus.style.color = '#667eea';
-
-            try {
-                const data = await file.arrayBuffer();
-                const workbook = XLSX.read(data);
-                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                const jsonData = XLSX.utils.sheet_to_json(worksheet);
-                
-                questionsData = jsonData;
-                
-                // 更新界面
-                updateCategoryOptions();
-                document.getElementById('totalQuestions').textContent = questionsData.length;
-                
-                // 啟用控制項
-                document.getElementById('categoryFilter').disabled = false;
-                document.getElementById('startButton').disabled = false;
-                document.getElementById('startButton').style.opacity = '1';
-                document.getElementById('startButton').textContent = '開始練習';
-                
-                fileStatus.textContent = `✅ 成功載入 ${questionsData.length} 題！`;
-                fileStatus.style.color = '#28a745';
-                
-            } catch (error) {
-                console.error('讀取檔案失敗:', error);
-                fileStatus.textContent = '❌ 檔案讀取失敗，請確認是Excel格式';
-                fileStatus.style.color = '#dc3545';
-            }
-        }
-
-        function updateCategoryOptions() {
-            const categories = {};
-            questionsData.forEach(question => {
-                const category = question.主題分類 || question['主題分類'];
-                if (category) {
-                    categories[category] = (categories[category] || 0) + 1;
-                }
-            });
-
-            const select = document.getElementById('categoryFilter');
-            select.innerHTML = `<option value="all">全部主題 (${questionsData.length}題)</option>`;
-            
-            Object.entries(categories).forEach(([category, count]) => {
-                const option = document.createElement('option');
-                option.value = category;
-                option.textContent = `${category} (${count}題)`;
-                select.appendChild(option);
-            });
-        }
+        let questionStartTime = null;
 
         // 初始化
-        async function initializeQuestions() {
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSystemStats();
+        });
+
+        // 載入系統統計
+        async function loadSystemStats() {
             try {
-                // 嘗試從上傳的Excel讀取資料
-                const fileContent = await window.fs.readFile('抽樣80題_免疫40_病毒40.xlsx');
-                const workbook = XLSX.read(fileContent);
-                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                const response = await fetch('/api/stats');
+                const data = await response.json();
                 
-                // 更新全域題庫
-                questionsData.length = 0;
-                questionsData.push(...jsonData);
+                document.getElementById('totalQuestions').textContent = data.totalQuestions;
                 
-                console.log('成功載入', questionsData.length, '題');
+                // 更新分類選項
+                const categorySelect = document.getElementById('categorySelect');
+                categorySelect.innerHTML = '<option value="all">全部主題 (' + data.totalQuestions + '題)</option>';
+                
+                data.categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.category;
+                    option.textContent = `${cat.category} (${cat.count}題)`;
+                    categorySelect.appendChild(option);
+                });
+                
             } catch (error) {
-                console.log('使用內建示例題庫');
+                console.error('載入統計失敗:', error);
             }
         }
 
-        function startQuiz() {
-            if (questionsData.length === 0) {
-                alert('請先上傳Excel檔案！');
+        // 學生登入
+        async function loginStudent() {
+            const studentId = document.getElementById('studentId').value.trim();
+            const studentName = document.getElementById('studentName').value.trim();
+
+            if (!studentId || !studentName) {
+                alert('請輸入完整的學號和姓名');
                 return;
             }
 
-            const category = document.getElementById('categoryFilter').value;
-            const mode = document.getElementById('practiceMode').value;
-
-            // 篩選題目
-            if (category === 'all') {
-                currentQuestions = [...questionsData];
-            } else {
-                currentQuestions = questionsData.filter(q => 
-                    (q.主題分類 || q['主題分類']) === category
-                );
-            }
-
-            if (currentQuestions.length === 0) {
-                alert('選擇的分類沒有題目！');
-                return;
-            }
-
-            // 應用模式
-            if (mode === 'random') {
-                shuffleArray(currentQuestions);
-            } else if (mode === 'shuffle_options') {
-                // 打亂選項順序但保持正確答案
-                currentQuestions = currentQuestions.map(q => shuffleQuestionOptions(q));
-            }
-
-            currentQuestionIndex = 0;
-            selectedAnswer = null;
-            showingAnswer = false;
+            currentUser = { studentId, studentName };
             
-            // 重置統計
-            stats = { totalAnswered: 0, correctCount: 0 };
-            updateStats();
-
-            // 切換介面
-            document.getElementById('setupPanel').style.display = 'none';
-            document.getElementById('quizPanel').style.display = 'block';
-
-            showQuestion();
+            // 載入個人統計
+            await loadPersonalStats();
+            
+            // 切換到設定頁面
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('setupSection').classList.remove('hidden');
         }
 
-        function showQuestion() {
+        // 載入個人統計
+        async function loadPersonalStats() {
+            try {
+                const response = await fetch(`/api/student-stats/${currentUser.studentId}`);
+                const data = await response.json();
+                
+                const stats = data.overall;
+                document.getElementById('myCorrect').textContent = stats.correct_answers || 0;
+                document.getElementById('myTotal').textContent = stats.total_questions || 0;
+                
+                const accuracy = stats.total_questions > 0 ? 
+                    Math.round((stats.correct_answers / stats.total_questions) * 100) : 0;
+                document.getElementById('myAccuracy').textContent = accuracy + '%';
+                
+            } catch (error) {
+                console.error('載入個人統計失敗:', error);
+            }
+        }
+
+        // 開始練習
+        async function startPractice() {
+            const category = document.getElementById('categorySelect').value;
+            const mode = document.getElementById('practiceMode').value;
+            const count = parseInt(document.getElementById('questionCount').value);
+
+            try {
+                const response = await fetch('/api/start-practice', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        studentId: currentUser.studentId,
+                        studentName: currentUser.studentName,
+                        category: category,
+                        mode: mode,
+                        count: count
+                    })
+                });
+
+                const data = await response.json();
+                currentQuestions = data.questions;
+                currentQuestionIndex = 0;
+                sessionStats = { total: 0, correct: 0 };
+
+                if (currentQuestions.length === 0) {
+                    alert('沒有找到符合條件的題目');
+                    return;
+                }
+
+                // 切換到練習頁面
+                document.getElementById('setupSection').classList.add('hidden');
+                document.getElementById('quizSection').classList.remove('hidden');
+                
+                showCurrentQuestion();
+
+            } catch (error) {
+                console.error('開始練習失敗:', error);
+                alert('開始練習失敗，請重試');
+            }
+        }
+
+        // 顯示當前題目
+        function showCurrentQuestion() {
             if (currentQuestionIndex >= currentQuestions.length) {
-                alert('所有題目都練習完了！\n' + 
-                      '總題數: ' + stats.totalAnswered + '\n' +
-                      '答對: ' + stats.correctCount + '\n' +
-                      '正確率: ' + Math.round((stats.correctCount / stats.totalAnswered) * 100) + '%');
-                backToSetup();
+                finishPractice();
                 return;
             }
 
             const question = currentQuestions[currentQuestionIndex];
             selectedAnswer = null;
-            showingAnswer = false;
+            questionStartTime = Date.now();
 
             // 更新進度條
             const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
@@ -524,16 +627,16 @@
             document.getElementById('questionNumber').textContent = 
                 `第 ${currentQuestionIndex + 1} 題 / 共 ${currentQuestions.length} 題`;
             document.getElementById('questionCategory').textContent = 
-                question.主題分類 || question['主題分類'] || '未分類';
+                question.category || question['主題分類'] || '未分類';
             document.getElementById('questionText').textContent = 
-                question.題目內容 || question['題目內容'] || '';
+                question.content || question['題目內容'] || '';
 
             // 顯示選項
             const optionsContainer = document.getElementById('optionsContainer');
             optionsContainer.innerHTML = '';
 
             ['A', 'B', 'C', 'D'].forEach(option => {
-                const optionText = question['選項' + option] || question[`選項${option}`] || '';
+                const optionText = question[`option_${option.toLowerCase()}`] || question[`選項${option}`] || '';
                 if (optionText) {
                     const optionElement = document.createElement('div');
                     optionElement.className = 'option';
@@ -543,13 +646,25 @@
                 }
             });
 
-            // 隱藏結果
+            // 控制按鈕顯示
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            prevBtn.style.display = currentQuestionIndex === 0 ? 'none' : 'inline-block';
+            nextBtn.textContent = currentQuestionIndex === currentQuestions.length - 1 ? '完成練習' : '下一題';
+
+            // 重置按鈕狀態
+            submitBtn.disabled = false;
+            submitBtn.textContent = '提交答案';
+
+            // 隱藏結果和詳解面板
             document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('explanationPanel').style.display = 'none';
         }
 
+        // 選擇選項
         function selectOption(option, element) {
-            if (showingAnswer) return;
-
             // 清除之前的選擇
             document.querySelectorAll('.option').forEach(opt => {
                 opt.classList.remove('selected');
@@ -560,110 +675,272 @@
             selectedAnswer = option;
         }
 
-        function showAnswer() {
+        // 提交答案
+        async function submitAnswer() {
             if (!selectedAnswer) {
                 alert('請先選擇一個答案！');
                 return;
             }
 
             const question = currentQuestions[currentQuestionIndex];
-            const correctAnswer = question.正確答案 || question['正確答案'];
-            const isCorrect = selectedAnswer === correctAnswer;
+            const submitBtn = document.getElementById('submitBtn');
+            const timeSpent = questionStartTime ? Math.round((Date.now() - questionStartTime) / 1000) : 0;
             
-            showingAnswer = true;
+            // 防止重複提交
+            submitBtn.disabled = true;
+            submitBtn.textContent = '已提交';
 
-            // 更新統計
-            stats.totalAnswered++;
-            if (isCorrect) {
-                stats.correctCount++;
-            }
-            updateStats();
+            try {
+                const response = await fetch('/api/submit-answer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        studentId: currentUser.studentId,
+                        studentName: currentUser.studentName,
+                        questionId: question.id,
+                        userAnswer: selectedAnswer,
+                        category: question.category,
+                        timeSpent: timeSpent
+                    })
+                });
 
-            // 標記選項
-            document.querySelectorAll('.option').forEach((opt, index) => {
-                const optionLetter = ['A', 'B', 'C', 'D'][index];
+                const result = await response.json();
                 
-                if (optionLetter === correctAnswer) {
-                    opt.classList.add('correct');
-                } else if (optionLetter === selectedAnswer && !isCorrect) {
-                    opt.classList.add('incorrect');
+                // 更新會話統計
+                sessionStats.total++;
+                if (result.correct) {
+                    sessionStats.correct++;
+                }
+
+                // 標記選項
+                document.querySelectorAll('.option').forEach((opt, index) => {
+                    const optionLetter = ['A', 'B', 'C', 'D'][index];
+                    
+                    if (optionLetter === result.correctAnswer) {
+                        opt.classList.add('correct');
+                    } else if (optionLetter === selectedAnswer && !result.correct) {
+                        opt.classList.add('incorrect');
+                    }
+                    
+                    opt.style.pointerEvents = 'none';
+                });
+
+                // 顯示結果
+                const resultPanel = document.getElementById('resultPanel');
+                const resultText = document.getElementById('resultText');
+                const explanationBtn = document.getElementById('explanationBtn');
+                
+                if (result.correct) {
+                    resultPanel.className = 'result-panel correct';
+                    resultText.innerHTML = '🎉 答對了！';
+                } else {
+                    const correctOptionText = question[`option_${result.correctAnswer.toLowerCase()}`];
+                    resultPanel.className = 'result-panel incorrect';
+                    resultText.innerHTML = `❌ 答錯了！正確答案是 ${result.correctAnswer}) ${correctOptionText}`;
                 }
                 
-                opt.style.pointerEvents = 'none';
-            });
+                // 顯示詳解按鈕（如果有詳解）
+                if (result.explanation && result.explanation.trim()) {
+                    explanationBtn.style.display = 'inline-block';
+                    explanationBtn.setAttribute('data-explanation', result.explanation);
+                    explanationBtn.setAttribute('data-question-id', question.id);
+                } else {
+                    explanationBtn.style.display = 'none';
+                }
+                
+                resultPanel.style.display = 'block';
 
-            // 顯示結果
-            const resultPanel = document.getElementById('resultPanel');
-            const resultText = document.getElementById('resultText');
+                // 載入更新的個人統計
+                await loadPersonalStats();
+
+            } catch (error) {
+                console.error('提交答案失敗:', error);
+                alert('提交答案失敗，請重試');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '提交答案';
+            }
+        }
+
+        // 切換詳解顯示
+        async function toggleExplanation() {
+            const explanationPanel = document.getElementById('explanationPanel');
+            const explanationBtn = document.getElementById('explanationBtn');
             
-            if (isCorrect) {
-                resultPanel.className = 'result correct';
-                resultText.innerHTML = '🎉 答對了！';
+            if (explanationPanel.style.display === 'none' || !explanationPanel.style.display) {
+                // 顯示詳解
+                const questionId = explanationBtn.getAttribute('data-question-id');
+                const explanation = explanationBtn.getAttribute('data-explanation');
+                
+                // 記錄查看詳解
+                try {
+                    await fetch('/api/view-explanation', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            studentId: currentUser.studentId,
+                            questionId: questionId
+                        })
+                    });
+                } catch (error) {
+                    console.error('記錄詳解查看失敗:', error);
+                }
+                
+                // 顯示詳解內容
+                document.getElementById('explanationText').textContent = explanation;
+                explanationPanel.style.display = 'block';
+                explanationBtn.textContent = '📖 隱藏詳解';
             } else {
-                const correctOptionText = question['選項' + correctAnswer] || question[`選項${correctAnswer}`];
-                resultPanel.className = 'result incorrect';
-                resultText.innerHTML = `❌ 答錯了！正確答案是 ${correctAnswer}) ${correctOptionText}`;
+                // 隱藏詳解
+                hideExplanation();
             }
-            
-            resultPanel.style.display = 'block';
         }
 
+        // 隱藏詳解
+        function hideExplanation() {
+            document.getElementById('explanationPanel').style.display = 'none';
+            document.getElementById('explanationBtn').textContent = '📖 查看詳解';
+        }
+
+        // 上一題
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showCurrentQuestion();
+            }
+        }
+
+        // 下一題
         function nextQuestion() {
-            currentQuestionIndex++;
-            showQuestion();
-        }
-
-        function backToSetup() {
-            document.getElementById('setupPanel').style.display = 'block';
-            document.getElementById('quizPanel').style.display = 'none';
-        }
-
-        function updateStats() {
-            document.getElementById('correctCount').textContent = stats.correctCount;
-            document.getElementById('totalAnswered').textContent = stats.totalAnswered;
-            
-            const accuracy = stats.totalAnswered > 0 ? 
-                Math.round((stats.correctCount / stats.totalAnswered) * 100) : 0;
-            document.getElementById('accuracy').textContent = accuracy + '%';
-        }
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                showCurrentQuestion();
+            } else {
+                finishPractice();
             }
         }
 
-        function shuffleQuestionOptions(question) {
-            const options = [
-                { letter: 'A', text: question.選項A || question['選項A'] },
-                { letter: 'B', text: question.選項B || question['選項B'] },
-                { letter: 'C', text: question.選項C || question['選項C'] },
-                { letter: 'D', text: question.選項D || question['選項D'] }
-            ];
-
-            shuffleArray(options);
-
-            const newQuestion = { ...question };
-            const correctAnswer = question.正確答案 || question['正確答案'];
+        // 完成練習
+        function finishPractice() {
+            const accuracy = sessionStats.total > 0 ? Math.round((sessionStats.correct / sessionStats.total) * 100) : 0;
             
-            options.forEach((option, index) => {
-                const newLetter = ['A', 'B', 'C', 'D'][index];
-                newQuestion['選項' + newLetter] = option.text;
-                
-                if (option.letter === correctAnswer) {
-                    newQuestion.正確答案 = newLetter;
-                }
-            });
-
-            return newQuestion;
+            alert(`練習完成！\n` + 
+                  `本次答對: ${sessionStats.correct} 題\n` +
+                  `本次總題: ${sessionStats.total} 題\n` +
+                  `本次正確率: ${accuracy}%`);
+            
+            backToSetup();
         }
 
-        // 載入完整題庫資料
-        const fullQuestionsData = [
-            {
-                "題號": 24, "年份": 113, "學期": 2, "科目": "臨床血清免疫學與臨床病毒學", "主題分類": "C. 臨床免疫病理學",
-                "題目內容": "下列有關自體免疫肝炎（autoimmune hepatitis）之敘述，何者正確？",
-                "選項A": "好發於年輕男性", "選項B": "病人血中常能測到高價數的抗平滑肌抗體（anti-smooth muscle antibody）",
-                "選項C": "病人血中常能測到高價數的抗粒線體抗體（anti-mitochondrial antibody）", "選項D": "病人血清中IgM抗體顯著增加",
-                "正確答案": "B"
+        // 返回設定
+        function backToSetup() {
+            document.getElementById('quizSection').classList.add('hidden');
+            document.getElementById('statsSection').classList.add('hidden');
+            document.getElementById('setupSection').classList.remove('hidden');
+        }
+
+        // 查看統計
+        async function showStats() {
+            try {
+                const response = await fetch(`/api/student-stats/${currentUser.studentId}`);
+                const data = await response.json();
+                
+                const stats = data.overall;
+                const categories = data.categories;
+
+                let personalStatsHTML = `
+                    <div class="leaderboard">
+                        <h3>📈 我的學習統計</h3>
+                        <div class="leaderboard-item">
+                            <span>總答題數</span>
+                            <span><strong>${stats.total_questions || 0}</strong> 題</span>
+                        </div>
+                        <div class="leaderboard-item">
+                            <span>答對題數</span>
+                            <span><strong>${stats.correct_answers || 0}</strong> 題</span>
+                        </div>
+                        <div class="leaderboard-item">
+                            <span>整體正確率</span>
+                            <span><strong>${Math.round(stats.accuracy_rate || 0)}%</strong></span>
+                        </div>
+                    </div>
+                `;
+
+                if (categories && categories.length > 0) {
+                    personalStatsHTML += `
+                        <div class="leaderboard">
+                            <h3>📚 分類統計</h3>
+                    `;
+                    
+                    categories.forEach(cat => {
+                        personalStatsHTML += `
+                            <div class="leaderboard-item">
+                                <span>${cat.category}</span>
+                                <span>${cat.correct}/${cat.total} (${cat.accuracy}%)</span>
+                            </div>
+                        `;
+                    });
+                    
+                    personalStatsHTML += `</div>`;
+                }
+
+                document.getElementById('personalStats').innerHTML = personalStatsHTML;
+
+                // 載入排行榜
+                const leaderboardResponse = await fetch('/api/leaderboard');
+                const leaderboardData = await leaderboardResponse.json();
+                
+                let leaderboardHTML = '';
+                leaderboardData.leaderboard.forEach((student, index) => {
+                    const isCurrentUser = student.student_name === currentUser.studentName;
+                    leaderboardHTML += `
+                        <div class="leaderboard-item ${isCurrentUser ? 'current-user' : ''}" style="${isCurrentUser ? 'background: #e3f2fd; font-weight: bold;' : ''}">
+                            <span>
+                                <span class="rank">#${index + 1}</span>
+                                ${student.student_name}
+                                ${isCurrentUser ? ' (我)' : ''}
+                            </span>
+                            <span>${Math.round(student.accuracy_rate)}% (${student.total_questions}題)</span>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('leaderboardContainer').innerHTML = leaderboardHTML;
+
+                // 切換到統計頁面
+                document.getElementById('setupSection').classList.add('hidden');
+                document.getElementById('statsSection').classList.remove('hidden');
+
+            } catch (error) {
+                console.error('載入統計失敗:', error);
+                alert('載入統計失敗，請重試');
+            }
+        }
+
+        // 登出
+        function logout() {
+            currentUser = null;
+            currentQuestions = [];
+            sessionStats = { total: 0, correct: 0 };
+            
+            // 清空登入表單
+            document.getElementById('studentId').value = '';
+            document.getElementById('studentName').value = '';
+            
+            // 重置統計顯示
+            document.getElementById('myCorrect').textContent = '0';
+            document.getElementById('myTotal').textContent = '0';
+            document.getElementById('myAccuracy').textContent = '0%';
+            
+            // 返回登入頁面
+            document.getElementById('setupSection').classList.add('hidden');
+            document.getElementById('quizSection').classList.add('hidden');
+            document.getElementById('statsSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
